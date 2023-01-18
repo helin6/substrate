@@ -48,6 +48,7 @@ use sp_std::marker::PhantomData;
 /// Weight functions needed for pallet_im_online.
 pub trait WeightInfo {
 	fn validate_unsigned_and_then_heartbeat(k: u32, e: u32, ) -> Weight;
+	fn set_slash_fraction() -> Weight;
 }
 
 /// Weights for pallet_im_online using the Substrate node and recommended hardware.
@@ -70,6 +71,11 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 			.saturating_add(T::DbWeight::get().reads(4 as u64))
 			.saturating_add(T::DbWeight::get().writes(1 as u64))
 	}
+	fn set_slash_fraction() -> Weight {
+		Weight::from_ref_time(18_178_000)
+			.saturating_add(T::DbWeight::get().reads(6 as u64))
+			.saturating_add(T::DbWeight::get().writes(4 as u64))
+	}
 }
 
 // For backwards compatibility and tests
@@ -90,5 +96,10 @@ impl WeightInfo for () {
 			.saturating_add(Weight::from_ref_time(296_343 as u64).saturating_mul(e as u64))
 			.saturating_add(RocksDbWeight::get().reads(4 as u64))
 			.saturating_add(RocksDbWeight::get().writes(1 as u64))
+	}
+	fn set_slash_fraction() -> Weight {
+		Weight::from_ref_time(18_178_000)
+			.saturating_add(RocksDbWeight::get().reads(6 as u64))
+			.saturating_add(RocksDbWeight::get().writes(4 as u64))
 	}
 }
