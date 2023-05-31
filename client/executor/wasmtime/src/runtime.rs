@@ -377,7 +377,7 @@ fn common_config(semantics: &Semantics) -> std::result::Result<wasmtime::Config,
 			.instance_memories(1)
 			// This determines how many instances of the module can be
 			// instantiated in parallel from the same `Module`.
-			.instance_count(32);
+			.instance_count(256);
 
 		config.allocation_strategy(wasmtime::InstanceAllocationStrategy::Pooling(pooling_config));
 	}
