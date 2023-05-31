@@ -245,7 +245,7 @@ pub struct RunCmd {
 
 	/// The size of the instances cache for each runtime.
 	///
-	/// The default value is 8 and the values higher than 256 are ignored.
+	/// The default value is 8 and the values higher than 1000 are ignored.
 	#[arg(long)]
 	pub max_runtime_instances: Option<usize>,
 
@@ -474,7 +474,7 @@ impl CliConfiguration for RunCmd {
 	}
 
 	fn max_runtime_instances(&self) -> Result<Option<usize>> {
-		Ok(self.max_runtime_instances.map(|x| x.min(256)))
+		Ok(self.max_runtime_instances.map(|x| x.min(1000)))
 	}
 
 	fn runtime_cache_size(&self) -> Result<u8> {
