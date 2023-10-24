@@ -90,6 +90,12 @@ pub trait Inspect<AccountId>: Sized {
 		force: Fortitude,
 	) -> Self::Balance;
 
+	fn evm_reducible_balance(
+		who: &AccountId,
+		preservation: Preservation,
+		force: Fortitude,
+	) -> Self::Balance;
+
 	/// Returns `true` if the balance of `who` may be increased by `amount`.
 	///
 	/// - `who`: The account of which the balance should be increased by `amount`.

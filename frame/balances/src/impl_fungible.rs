@@ -68,6 +68,35 @@ impl<T: Config<I>, I: 'static> fungible::Inspect<T::AccountId> for Pallet<T, I> 
 		// Liquid balance is what is neither on hold nor frozen/required for provider.
 		a.free.saturating_sub(untouchable)
 	}
+
+	fn evm_reducible_balance(
+		who: &T::AccountId,
+		preservation: Preservation,
+		force: Fortitude,
+	) -> Self::Balance {
+		let a = Self::account(who);
+		let mut untouchable = Zero::zero();
+		if force == Polite {
+			// Frozen balance applies to total. Anything on hold therefore gets discounted from the
+			// limit given by the freezes.
+			untouchable = a.frozen;
+		}
+		// If we want to keep our provider ref..
+		if preservation == Preserve
+			// ..or we don't want the account to die and our provider ref is needed for it to live..
+			|| preservation == Protect && !a.free.is_zero() &&
+			frame_system::Pallet::<T>::providers(who) == 1
+			// ..or we don't care about the account dying but our provider ref is required..
+			|| preservation == Expendable && !a.free.is_zero() &&
+			!frame_system::Pallet::<T>::can_dec_provider(who)
+		{
+			// ..then the ED needed..
+			untouchable = untouchable.max(T::ExistentialDeposit::get());
+		}
+		// Liquid balance is what is neither on hold nor frozen/required for provider.
+		a.free.saturating_sub(untouchable)
+	}
+
 	fn can_deposit(
 		who: &T::AccountId,
 		amount: Self::Balance,
